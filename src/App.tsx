@@ -1,11 +1,32 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from './assets/vite.svg';
 import heroImg from './assets/hero.png';
 import './App.css';
+import { TodoList } from './components/TodoList';
+import type { Todo } from './types';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  let id = 2;
+  const [tasks, setTasks] = useState<Todo[]>([
+    {
+      id: 1,
+      done: false,
+      content: 'Ahoj som tvoj prvy task',
+    },
+  ]);
+  const [newTaskVal, setNewTaskVal] = useState<string>('');
+
+  const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setNewTaskVal(val);
+  };
+
+  const createNewTodo = () => {
+    const newTasks = [...tasks, { id: id++, content: newTaskVal, done: false }];
+    setTasks(newTasks);
+    setNewTaskVal('');
+  };
 
   return (
     <>
@@ -15,8 +36,10 @@ function App() {
           <img src={reactLogo} className="framework" alt="React logo" />
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
-        <button type="button" className="counter" onClick={() => setTasks((count) => count + 1)}>
-          Count is {tasks}
+        <TodoList todoList={tasks} />
+        <input className="border-blue bg-white" type="text" value={newTaskVal} onChange={onInputChanged} />
+        <button type="button" className="counter" onClick={createNewTodo}>
+          Add task
         </button>
       </section>
 
