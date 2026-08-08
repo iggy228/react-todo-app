@@ -41,6 +41,14 @@ export function useTodos() {
     setTodos((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const onEdit = (id: string, content: string) => {
+    setTodos((prev) => prev.map((task) => (task.id === id ? { ...task, content: content } : task)));
+  };
+
+  const clearDoneTodos = () => {
+    setTodos((prev) => prev.filter((todo) => !todo.done));
+  };
+
   const filteredTodos = useMemo(() => {
     if (filter === 'complete') {
       return todos.filter((t) => t.done);
@@ -61,5 +69,7 @@ export function useTodos() {
     filteredTodos,
     filter,
     setFilter,
+    onEdit,
+    clearDoneTodos,
   };
 }
