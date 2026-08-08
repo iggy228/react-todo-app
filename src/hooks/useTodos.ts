@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { PersistentStorage } from '../services/persistent-storage';
 import type { Todo } from '../types';
-import { getDatetimeId } from '../utils';
 
 const storage = new PersistentStorage();
 const STORAGE_KEY = 'todos';
@@ -14,7 +13,7 @@ export function useTodos() {
     }
     return [
       {
-        id: 1,
+        id: '1',
         done: false,
         content: 'Ahoj som tvoj prvy task. Odklikni ma a vymaz ma :)',
       },
@@ -29,15 +28,15 @@ export function useTodos() {
   const createTodo = () => {
     if (!newTodo.trim()) return;
 
-    setTodos((prev) => [...prev, { id: getDatetimeId(), content: newTodo, done: false }]);
+    setTodos((prev) => [...prev, { id: crypto.randomUUID(), content: newTodo, done: false }]);
     setNewTodo('');
   };
 
-  const onToggle = (id: number) => {
+  const onToggle = (id: string) => {
     setTodos((prev) => prev.map((task) => (task.id === id ? { ...task, done: !task.done } : task)));
   };
 
-  const onDelete = (id: number) => {
+  const onDelete = (id: string) => {
     setTodos((prev) => prev.filter((t) => t.id !== id));
   };
 

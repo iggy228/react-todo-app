@@ -1,11 +1,11 @@
 export class PersistentStorage {
   private storage: Storage;
 
-  public constructor() {
+  constructor() {
     this.storage = localStorage;
   }
 
-  public setData(key: string, data: any) {
+  setData(key: string, data: any) {
     if (typeof data === 'string') {
       this.storage.setItem(key, data);
       return;
@@ -13,7 +13,7 @@ export class PersistentStorage {
     this.storage.setItem(key, JSON.stringify(data));
   }
 
-  public getData<Type>(key: string): Type | null {
+  getData<Type>(key: string): Type | null {
     const data = this.storage.getItem(key);
     if (data == null) {
       return null;
@@ -22,11 +22,12 @@ export class PersistentStorage {
     try {
       return JSON.parse(data) as Type;
     } catch (e) {
-      return data as unknown as Type;
+      console.error("Couldn't parse data in storage.");
+      return null;
     }
   }
 
-  public keyExist(key: string): boolean {
+  keyExist(key: string): boolean {
     const data = this.storage.getItem(key);
     return data !== null;
   }
