@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { Todo } from '../types';
 
 export interface TodoRowProps {
@@ -10,12 +10,21 @@ export interface TodoRowProps {
 
 export function TodoListRow(props: TodoRowProps) {
   const [inlineEdit, setInlineEdit] = useState(false);
-  const toggleLabeltoInput = () => {
-    setInlineEdit((prev) => !prev);
+  const [editValue, setEditValue] = useState(props.todo.content);
+
+  const confirm = () => {
+    const trimmed = editValue.trim();
+    if (trimmed) {
+      props.onEdit(props.todo.id, trimmed);
+    } else {
+      setEditValue(props.todo.content);
+    }
+    setInlineEdit(false);
   };
 
-  const onContentChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    props.onEdit(props.todo.id, e.target.value);
+  const cancel = () => {
+    setEditValue(props.todo.content);
+    setInlineEdit(false);
   };
 
   return (
@@ -35,23 +44,30 @@ export function TodoListRow(props: TodoRowProps) {
         {inlineEdit ? (
           <div className="flex flex-1">
             <input
+              autoFocus
               type="text"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') confirm();
+                if (e.key === 'Escape') cancel();
+              }}
+              onBlur={confirm}
               className="flex-1 px-3 py-2 rounded-lg text-sm transition-colors"
               style={{
-                border: '1px solid var(--border)',
+                border: '1px solid var(--accent)',
                 background: 'var(--bg)',
                 color: 'var(--text-h)',
                 outline: 'none',
               }}
-              autoFocus
-              value={props.todo.content}
-              onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
-              onBlur={toggleLabeltoInput}
-              onKeyDown={(e) => e.key === 'Enter' && toggleLabeltoInput()}
-              onChange={onContentChanged}
             />
-            <button className="ml-4" onClick={toggleLabeltoInput}>
-              Confirm
+            <button
+              className="ml-4 text-sm cursor-pointer"
+              style={{ color: 'var(--text)' }}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={cancel}
+            >
+              Cancel
             </button>
           </div>
         ) : (
@@ -62,7 +78,10 @@ export function TodoListRow(props: TodoRowProps) {
                 ? { textDecoration: 'line-through', color: 'var(--text)', opacity: 0.5 }
                 : { color: 'var(--text-h)' }
             }
-            onDoubleClick={toggleLabeltoInput}
+            onDoubleClick={() => {
+              setEditValue(props.todo.content);
+              setInlineEdit(true);
+            }}
           >
             {props.todo.content}
           </label>
