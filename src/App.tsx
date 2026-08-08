@@ -7,7 +7,7 @@ import { TodoList } from './components/TodoList';
 import type { Todo } from './types';
 
 function App() {
-  let id = 2;
+  let [id, setId] = useState(2);
   const [tasks, setTasks] = useState<Todo[]>([
     {
       id: 1,
@@ -19,13 +19,26 @@ function App() {
 
   const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
+
     setNewTaskVal(val);
   };
 
   const createNewTodo = () => {
-    const newTasks = [...tasks, { id: id++, content: newTaskVal, done: false }];
+    const newTasks = [...tasks, { id: id, content: newTaskVal, done: false }];
+
+    setId(id + 1);
     setTasks(newTasks);
     setNewTaskVal('');
+  };
+
+  const onToggle = (id: number) => {
+    setTasks(tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task)));
+  };
+
+  const onDelete = (id: number) => {
+    const newTasks = tasks.filter((t) => t.id != id);
+
+    setTasks(newTasks);
   };
 
   return (
@@ -36,11 +49,13 @@ function App() {
           <img src={reactLogo} className="framework" alt="React logo" />
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
-        <TodoList todoList={tasks} />
-        <input className="border-blue bg-white" type="text" value={newTaskVal} onChange={onInputChanged} />
-        <button type="button" className="counter" onClick={createNewTodo}>
-          Add task
-        </button>
+        <div className="min-w-md flex flex-col ">
+          <TodoList todoList={tasks} onToggle={onToggle} onDelete={onDelete} />
+          <input className="border-blue bg-white mt-4" type="text" value={newTaskVal} onChange={onInputChanged} />
+          <button type="button" className="counter mt-4 text-center" onClick={createNewTodo}>
+            Add task
+          </button>
+        </div>
       </section>
 
       <div className="ticks"></div>
