@@ -1,32 +1,51 @@
-# React + TypeScript + Vite
+# My Todo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A todo list app built with React 19, TypeScript, and Tailwind CSS 4.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Add, edit (double-click), and delete todos
+- Check off todos to mark them as done
+- Filter by All / Incomplete / Completed
+- Clear all completed todos
+- Persisted to `localStorage` — survives page refresh
+- Dark mode support
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React 19](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org)
+- [Tailwind CSS 4](https://tailwindcss.com)
+- [Vite 8](https://vitejs.dev)
 
-## Expanding the Oxlint configuration
+## Project structure
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+src/
+├── components/
+│   ├── TodoList.tsx       # List container, empty state
+│   └── TodoListRow.tsx    # Single todo row with inline edit
+├── hooks/
+│   └── useTodos.ts        # All todo state and logic
+├── services/
+│   └── persistent-storage.ts  # localStorage wrapper
+├── types/
+│   └── index.ts           # Todo, TodoFilterTypes
+└── App.tsx                # Layout, filter tabs, input
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Getting started
+
+```bash
+npm install
+npm run dev
+```
+
+## Scripts
+
+| Command           | Description                         |
+| ----------------- | ----------------------------------- |
+| `npm run dev`     | Start dev server                    |
+| `npm run build`   | Type-check and build for production |
+| `npm run preview` | Preview production build locally    |
+| `npm run lint`    | Run Oxlint                          |
