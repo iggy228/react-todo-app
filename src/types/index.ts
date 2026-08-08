@@ -3,3 +3,5 @@ export interface Todo {
   done: boolean;
   content: string;
 }
+
+export type TodoFilterTypes = 'all' | 'incomplete' | 'complete';

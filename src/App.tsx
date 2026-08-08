@@ -7,7 +7,7 @@ import { TodoList } from './components/TodoList';
 import { useTodos } from './hooks/useTodos';
 
 function App() {
-  const { todos, onDelete, onToggle, createTodo, setNewTodo, newTodo } = useTodos();
+  const { todos, onDelete, onToggle, createTodo, setNewTodo, newTodo, filter, setFilter, filteredTodos } = useTodos();
 
   const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -24,7 +24,12 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div className="min-w-md flex flex-col ">
-          <TodoList todoList={todos} onToggle={onToggle} onDelete={onDelete} />
+          <div className="flex">
+            <button onClick={() => setFilter('all')}>All</button>
+            <button onClick={() => setFilter('incomplete')}>Incomplete</button>
+            <button onClick={() => setFilter('complete')}>Completed</button>
+          </div>
+          <TodoList todoList={filteredTodos} onToggle={onToggle} onDelete={onDelete} />
           <input
             className="border-blue bg-white mt-4"
             type="text"

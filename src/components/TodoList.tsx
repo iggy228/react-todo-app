@@ -2,8 +2,8 @@ import type { Todo } from '../types';
 
 export interface TodoListProps {
   todoList: Todo[];
-  onToggle: (id: number) => void;
-  onDelete: (id: number) => void;
+  onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 export function TodoList(props: TodoListProps) {

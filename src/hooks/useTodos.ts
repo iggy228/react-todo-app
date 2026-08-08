@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PersistentStorage } from '../services/persistent-storage';
-import type { Todo } from '../types';
+import type { Todo, TodoFilterTypes } from '../types';
 
 const storage = new PersistentStorage();
 const STORAGE_KEY = 'todos';
@@ -20,6 +20,7 @@ export function useTodos() {
     ];
   });
   const [newTodo, setNewTodo] = useState<string>('');
+  const [filter, setFilter] = useState<TodoFilterTypes>('all');
 
   useEffect(() => {
     storage.setData(STORAGE_KEY, todos);
@@ -40,6 +41,16 @@ export function useTodos() {
     setTodos((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const filteredTodos = useMemo(() => {
+    if (filter === 'complete') {
+      return todos.filter((t) => t.done);
+    }
+    if (filter === 'incomplete') {
+      return todos.filter((t) => !t.done);
+    }
+    return todos;
+  }, [filter]);
+
   return {
     todos,
     newTodo,
@@ -47,5 +58,8 @@ export function useTodos() {
     createTodo,
     onToggle,
     onDelete,
+    filteredTodos,
+    filter,
+    setFilter,
   };
 }
