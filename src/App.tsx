@@ -7,7 +7,7 @@ import { TodoList } from './components/TodoList';
 import { useTodos } from './hooks/useTodos';
 
 function App() {
-  const { todos, onDelete, onToggle, createTodo, setNewTodo, newTodo, filter, setFilter, filteredTodos } = useTodos();
+  const { onDelete, onToggle, createTodo, setNewTodo, newTodo, filter, setFilter, filteredTodos } = useTodos();
 
   const onInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -25,9 +25,15 @@ function App() {
         </div>
         <div className="min-w-md flex flex-col ">
           <div className="flex">
-            <button onClick={() => setFilter('all')}>All</button>
-            <button onClick={() => setFilter('incomplete')}>Incomplete</button>
-            <button onClick={() => setFilter('complete')}>Completed</button>
+            {(['all', 'incomplete', 'complete'] as const).map((filterName) => (
+              <button
+                key={filterName}
+                onClick={() => setFilter(filterName)}
+                className={filterName === filter ? 'font-bold underline' : ''}
+              >
+                {filterName}
+              </button>
+            ))}
           </div>
           <TodoList todoList={filteredTodos} onToggle={onToggle} onDelete={onDelete} />
           <input

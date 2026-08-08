@@ -49,7 +49,7 @@ export function useTodos() {
       return todos.filter((t) => !t.done);
     }
     return todos;
-  }, [filter]);
+  }, [filter, todos]);
 
   return {
     todos,
