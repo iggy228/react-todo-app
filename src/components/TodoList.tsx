@@ -10,21 +10,17 @@ export function TodoList(props: TodoListProps) {
   return (
     <div className="flex flex-col">
       {props.todoList.map((todo) => (
-        <div className="flex justify-between">
+        <div key={todo.id} className="flex justify-between">
           <div className="flex">
             <input
               className="mr-2"
               type="checkbox"
-              name={`todo-${todo.id}`}
+              id={`todo-${todo.id}`}
               value={todo.id}
               checked={todo.done}
               onChange={() => props.onToggle(todo.id)}
             />
-            <label
-              htmlFor={`todo-${todo.id}`}
-              className={todo.done ? 'line-through' : ''}
-              onClick={() => props.onToggle(todo.id)}
-            >
+            <label htmlFor={`todo-${todo.id}`} className={todo.done ? 'line-through' : ''}>
               {todo.content}
             </label>
           </div>

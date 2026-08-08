@@ -7,7 +7,7 @@ import { TodoList } from './components/TodoList';
 import type { Todo } from './types';
 
 function App() {
-  let [id, setId] = useState(2);
+  const [id, setId] = useState(2);
   const [tasks, setTasks] = useState<Todo[]>([
     {
       id: 1,
@@ -24,21 +24,19 @@ function App() {
   };
 
   const createNewTodo = () => {
-    const newTasks = [...tasks, { id: id, content: newTaskVal, done: false }];
+    if (!newTaskVal.trim()) return;
 
-    setId(id + 1);
-    setTasks(newTasks);
+    setTasks((prev) => [...prev, { id: id, content: newTaskVal, done: false }]);
+    setId((prevId) => prevId + 1);
     setNewTaskVal('');
   };
 
   const onToggle = (id: number) => {
-    setTasks(tasks.map((task) => (task.id === id ? { ...task, done: !task.done } : task)));
+    setTasks((prev) => prev.map((task) => (task.id === id ? { ...task, done: !task.done } : task)));
   };
 
   const onDelete = (id: number) => {
-    const newTasks = tasks.filter((t) => t.id != id);
-
-    setTasks(newTasks);
+    setTasks((prev) => prev.filter((t) => t.id !== id));
   };
 
   return (
@@ -52,7 +50,12 @@ function App() {
         <div className="min-w-md flex flex-col ">
           <TodoList todoList={tasks} onToggle={onToggle} onDelete={onDelete} />
           <input className="border-blue bg-white mt-4" type="text" value={newTaskVal} onChange={onInputChanged} />
-          <button type="button" className="counter mt-4 text-center" onClick={createNewTodo}>
+          <button
+            type="button"
+            className="counter mt-4 text-center"
+            onClick={createNewTodo}
+            disabled={!newTaskVal.trim()}
+          >
             Add task
           </button>
         </div>
