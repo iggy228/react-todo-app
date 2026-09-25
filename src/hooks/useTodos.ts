@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import { PersistentStorage } from '../services/persistent-storage';
 import type { Todo, TodoFilterTypes } from '../types';
 
@@ -6,7 +6,30 @@ const storage = new PersistentStorage();
 const STORAGE_KEY = 'todos';
 
 export function useTodos() {
-  const [todos, setTodos] = useState<Todo[]>(() => {
+  // reducers
+  type Action =
+    | { type: 'ADD'; content: string }
+    | { type: 'TOGGLE'; id: string }
+    | { type: 'DELETE'; id: string }
+    | { type: 'EDIT'; id: string; content: string }
+    | { type: 'CLEAR_DONE' };
+
+  const todosReducer = (state: Todo[], action: Action) => {
+    switch (action.type) {
+      case 'ADD':
+        return [...state, { id: crypto.randomUUID(), content: newTodo, done: false }];
+      case 'DELETE':
+        return state.filter((task) => task.id !== action.id);
+      case 'TOGGLE':
+        return state.map((task) => (task.id === action.id ? { ...task, done: !task.done } : task));
+      case 'EDIT':
+        return state.map((task) => (task.id === action.id ? { ...task, content: action.content } : task));
+      case 'CLEAR_DONE':
+        return state.filter((task) => !task.done);
+    }
+  };
+
+  const getInitialTodos = () => {
     const data = storage.getData<Todo[]>(STORAGE_KEY);
     if (data !== null) {
       return data;
@@ -18,7 +41,9 @@ export function useTodos() {
         content: 'Ahoj som tvoj prvy task. Odklikni ma a vymaz ma :)',
       },
     ];
-  });
+  };
+
+  const [todos, dispatch] = useReducer(todosReducer, getInitialTodos());
   const [newTodo, setNewTodo] = useState<string>('');
   const [filter, setFilter] = useState<TodoFilterTypes>('all');
 
@@ -29,24 +54,39 @@ export function useTodos() {
   const createTodo = () => {
     if (!newTodo.trim()) return;
 
-    setTodos((prev) => [...prev, { id: crypto.randomUUID(), content: newTodo, done: false }]);
+    dispatch({
+      type: 'ADD',
+      content: newTodo,
+    });
     setNewTodo('');
   };
 
   const onToggle = (id: string) => {
-    setTodos((prev) => prev.map((task) => (task.id === id ? { ...task, done: !task.done } : task)));
+    dispatch({
+      type: 'TOGGLE',
+      id: id,
+    });
   };
 
   const onDelete = (id: string) => {
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    dispatch({
+      type: 'DELETE',
+      id: id,
+    });
   };
 
   const onEdit = (id: string, content: string) => {
-    setTodos((prev) => prev.map((task) => (task.id === id ? { ...task, content: content } : task)));
+    dispatch({
+      type: 'EDIT',
+      id: id,
+      content: content,
+    });
   };
 
   const clearDoneTodos = () => {
-    setTodos((prev) => prev.filter((todo) => !todo.done));
+    dispatch({
+      type: 'CLEAR_DONE',
+    });
   };
 
   const filteredTodos = useMemo(() => {
