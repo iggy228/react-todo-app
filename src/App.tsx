@@ -3,14 +3,8 @@ import viteLogo from './assets/vite.svg';
 import heroImg from './assets/hero.png';
 import './App.css';
 import { TodoList } from './components/TodoList';
+import { FilterTabs } from './components/FilterTabs';
 import { useTodos } from './hooks/useTodos';
-import type { TodoFilterTypes } from './types';
-
-const FILTER_LABELS: Record<TodoFilterTypes, string> = {
-  all: 'All',
-  incomplete: 'Incomplete',
-  complete: 'Completed',
-};
 
 function App() {
   const {
@@ -35,29 +29,9 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
 
-        <div className="flex flex-col gap-3" style={{ width: '420px', maxWidth: '100%' }}>
+        <div className="flex flex-col gap-3" style={{ width: '640px', maxWidth: '100%' }}>
           {/* Filter tabs */}
-          <div className="flex gap-1 p-1 rounded-lg" style={{ background: 'var(--code-bg)' }}>
-            {(Object.keys(FILTER_LABELS) as TodoFilterTypes[]).map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className="flex-1 py-1.5 px-3 rounded-md text-sm transition-all cursor-pointer"
-                style={
-                  filter === f
-                    ? {
-                        background: 'var(--bg)',
-                        color: 'var(--text-h)',
-                        fontWeight: 600,
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                      }
-                    : { color: 'var(--text)' }
-                }
-              >
-                {FILTER_LABELS[f]}
-              </button>
-            ))}
-          </div>
+          <FilterTabs filter={filter} onFilterChange={setFilter} />
 
           {/* Todo list */}
           <TodoList todoList={filteredTodos} onToggle={onToggle} onDelete={onDelete} onEdit={onEdit} />
@@ -93,7 +67,7 @@ function App() {
             <button
               type="button"
               onClick={clearDoneTodos}
-              className="px-4 pb-2 pt-4 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
               style={{ background: 'var(--accent)' }}
             >
               Clear done todos
